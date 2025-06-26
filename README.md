@@ -117,9 +117,9 @@ chakoshi を使ってこのテキストをチェックしてください: "問�
 
 ```bash
 
-git  clone  https://github.com/nttcom/chakoshi-mcp-server.git
+git clone https://github.com/nttcom/chakoshi-mcp-server.git
 
-cd  chakoshi-mcp-server
+cd chakoshi-mcp-server
 
 ```
 
@@ -141,12 +141,12 @@ source $HOME/.local/bin/env
 
 # uv を使用する場合（推奨）
 
-uv  sync
+uv sync
 
 
 # pip を使用する場合
 
-pip  install  -e  .
+pip install -e .
 
 ```
 
@@ -176,7 +176,7 @@ CHAKOSHI_TIMEOUT_SEC=5
 
   
 
-**注意**: 実際の API キーとカテゴリセット ID は chakoshi API の管理画面から取得してください。
+**注意**: 実際の APIキーとカテゴリセットID はchakoshiプレイグラウンドの管理画面から取得してください。
 
   
 
