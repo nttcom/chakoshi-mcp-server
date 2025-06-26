@@ -28,7 +28,7 @@ chakoshiとは、NTT Communicationsが提供するLLM向けのガードレール
 
 ```
 
-official-chakoshi-mcp/
+chakoshi-mcp-server/
 
 ├── main.py # エントリポイント
 
@@ -79,20 +79,20 @@ chakoshi を使ってこのテキストをチェックしてください: "問�
 
   
 ### API キーの取得
-[chakoshiのプレイグラウンド](https://platform.beta.chakoshi.ntt.com/playground)にアクセスし、画面に従って新規登録フローを進めてください。
+1. [chakoshiのプレイグラウンド](https://platform.beta.chakoshi.ntt.com/playground)にアクセスし、画面に従って新規登録フローを進めてください。
 
-新規登録、およびログイン完了後、プレイグラウンドの設定をクリックします。
+2. 新規登録、およびログイン完了後、プレイグラウンドの設定をクリックします。
 
-その後、設定画面からAPIキーを新規に発行します。
+3. その後、設定画面からAPIキーを新規に発行します。
 
   
 
 ### カテゴリセットの設定
-プレイグラウンドにアクセスし、「新しいカスタム検知項目の追加」をクリックし、検知項目名とカスタム検知項目の定義を入力します。 
+1. プレイグラウンドにアクセスし、「新しいカスタム検知項目の追加」をクリックし、検知項目名とカスタム検知項目の定義を入力します。 
 
-別名で保存を選択し、新しくカスタム検知項目セットを保存します。
+2. 別名で保存を選択し、新しくカスタム検知項目セットを保存します。
 
-保存後、「選択中の検知項目セットIDをコピー」の項目からカテゴリセットIDをコピーします。
+3. 保存後、「選択中の検知項目セットIDをコピー」の項目からカテゴリセットIDをコピーします。
 
 
 ## 必要要件
@@ -117,9 +117,9 @@ chakoshi を使ってこのテキストをチェックしてください: "問�
 
 ```bash
 
-git  clone  https://github.com/hogehogehoge/official-chakoshi-mcp.git
+git  clone  https://github.com/nttcom/chakoshi-mcp-server.git
 
-cd  official-chakoshi-mcp
+cd  chakoshi-mcp-server
 
 ```
 
@@ -206,7 +206,7 @@ Claude Desktop の設定ファイル（`claude_desktop_config.json`）に以下�
 "command": "/PATH_to_uv/uv",
         "args": [
           "--directory",
-          "/PATH_to_chakoshi/official-chakoshi-mcp",
+          "/PATH_to_chakoshi/chakoshi-mcp-server",
           "run",
           "main.py"
         ],
