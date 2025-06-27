@@ -2,7 +2,7 @@
 
   
 
-LLMクライアントアプリケーションと、[chakoshi API](https://chakoshi.ntt.com) を連携するMCP (Model Context Protocol) サーバーです。
+MCPクライアントアプリケーションと、[chakoshi API](https://chakoshi.ntt.com) を連携するMCP (Model Context Protocol) サーバーです。
 
 Claude Desktop などからchakoshiを利用して日本語テキストのモデレーション(有害性チェック)を実行できます。
 
@@ -103,7 +103,7 @@ chakoshi を使ってこのテキストをチェックしてください: "問�
 
 - chakoshi のユーザ登録、および、APIキー
 
-- LLMクライアントアプリケーション (Claude Desktopなど)
+- MCPクライアントアプリケーション (Claude Desktopなど)
 
   
 
