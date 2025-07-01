@@ -12,7 +12,7 @@ Claude Desktop などからchakoshiを利用して日本語テキストのモデ
 
   
 
-chakoshiとは、NTT Communicationsが提供するLLM向けのガードレールです。詳細は以下をご覧ください。
+chakoshiとは、NTT ドコモビジネスが提供するLLM向けのガードレールです。詳細は以下をご覧ください。
 
 [chakoshi 製品ページ](https://chakoshi.ntt.com)
 
