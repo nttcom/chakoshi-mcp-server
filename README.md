@@ -4,7 +4,7 @@
 
 MCPクライアントアプリケーションと、[chakoshi API](https://chakoshi.ntt.com) を連携するMCP (Model Context Protocol) サーバーです。
 
-Claude Desktop などからchakoshiのAPI を利用して、テキストの安全性判定を実行できます。
+Claude Desktop などからchakoshiのAPIを利用して、テキストの安全性判定を実行できます。
 
   
 
@@ -88,7 +88,7 @@ chakoshi を使ってこのテキストをチェックしてください: "問�
   
 
 ### ガードレールの作成
-Guardrails Apply API を利用するためには、ポリシー設定をあらかじめ完了してガードレールIDを発行している必要があります。
+chakoshiのGuardrails Apply API を利用するためには、ポリシー設定をあらかじめ完了してガードレールIDを発行している必要があります。
 
 ポリシー設定とガードレールIDの発行手順については、[クイックスタート ガードレールの作成](https://docs.chakoshi.ntt.com)を参照してください。
 
