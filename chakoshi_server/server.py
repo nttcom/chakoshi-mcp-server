@@ -7,25 +7,24 @@ from mcp.server.stdio import stdio_server
 from .config import settings
 
 '''
-Helper function to call the chakoshi API.
+Helper function to call the chakoshi Guardrails Apply API.
 '''
 async def call_chakoshi(text: str) -> dict:
     """
-    Calls the chakoshi moderation API with the provided text.
+    Calls the chakoshi Guardrails Apply API with the provided text.
 
     Args:
-        text: The text to be moderated.
+        text: The text to be checked by guardrails (max 2000 characters).
 
     Returns:
-        A dictionary containing the moderation results from the API.
+        A dictionary containing the guardrails assessment results from the API.
 
     Raises:
         httpx.HTTPStatusError: If the API call returns an error status code.
     """
     payload = {
         "input": text,
-        "model": settings.model_id,
-        "category_set_id": settings.category_set_id,
+        "guardrail_id": settings.guardrail_id,
     }
     headers = {
         "Authorization": f"Bearer {settings.api_key}",
@@ -48,7 +47,7 @@ def build_server() -> Server:
     Returns:
         The configured MCP Server instance.
     """
-    app = Server("chakoshi-moderation-server")
+    app = Server("chakoshi-guardrails-server")
 
     # Endpoint called first by the MCP client to discover available tools.
     @app.list_tools()
@@ -62,12 +61,15 @@ def build_server() -> Server:
         return [
             types.Tool(
                 name="moderate_text",
-                description="Check if a text is safe using chakoshi moderation API",
+                description="Check if a text is safe using chakoshi Guardrails Apply API",
                 inputSchema={
                     "type": "object",
                     "required": ["text"],
                     "properties": {
-                        "text": {"type": "string", "description": "Text to check"}
+                        "text": {
+                            "type": "string",
+                            "description": "Text to check (max 2000 characters)",
+                        }
                     },
                 },
             )
@@ -98,10 +100,10 @@ def build_server() -> Server:
             raise ValueError("Missing required arg 'text'")
 
         try:
-            # Call the chakoshi API
+            # Call the chakoshi Guardrails Apply API
             result = await call_chakoshi(args["text"])
-            # Format the results into a user-readable format (pretty JSON)
-            pretty = json.dumps(result["results"], ensure_ascii=False, indent=2)
+            # Format the full API response for transparency (includes id, guardrail_id, assessments)
+            pretty = json.dumps(result, ensure_ascii=False, indent=2)
             return [types.TextContent(type="text", text=pretty)]
 
         except httpx.HTTPStatusError as e:
