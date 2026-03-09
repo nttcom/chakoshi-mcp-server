@@ -4,7 +4,7 @@
 
 MCPクライアントアプリケーションと、[chakoshi API](https://chakoshi.ntt.com) を連携するMCP (Model Context Protocol) サーバーです。
 
-Claude Desktop などからchakoshiを利用して日本語テキストのモデレーション(有害性チェック)を実行できます。
+Claude Desktop などからchakoshiのAPIを利用して、テキストの安全性判定を実行できます。
 
   
 
@@ -49,19 +49,19 @@ chakoshi-mcp-server/
 ### moderate_text
 
  
-テキストコンテンツの有害性をチェックするツールです。
+テキストコンテンツをchakoshiのガードレールでチェックするツールです。
 
   
 
 **入力パラメータ:**
 
--  `text` (string, 必須): チェックしたいテキスト
+-  `text` (string, 必須): チェックしたいテキスト（最大2000文字）
 
   
 
 **出力:**
 
-- chakoshi API からのモデレーション結果をJSON形式で返します
+- chakoshi Guardrails Apply API からのアセスメント結果をJSON形式で返します
 
   
 
@@ -87,12 +87,10 @@ chakoshi を使ってこのテキストをチェックしてください: "問�
 
   
 
-### カテゴリセットの設定
-1. プレイグラウンドにアクセスし、「新しいカスタム検知項目の追加」をクリックし、検知項目名とカスタム検知項目の定義を入力します。 
+### ガードレールの作成
+chakoshiのGuardrails Apply API を利用するためには、ポリシー設定をあらかじめ完了してガードレールIDを発行している必要があります。
 
-2. 別名で保存を選択し、新しくカスタム検知項目セットを保存します。
-
-3. 保存後、「選択中の検知項目セットIDをコピー」の項目からカテゴリセットIDをコピーします。
+ポリシー設定とガードレールIDの発行手順については、[クイックスタート ガードレールの作成](https://docs.chakoshi.ntt.com)を参照してください。
 
 
 ## 必要要件
@@ -101,7 +99,7 @@ chakoshi を使ってこのテキストをチェックしてください: "問�
 
 - Python 3.10 以上
 
-- chakoshi のユーザ登録、および、APIキー
+- chakoshi のユーザ登録、APIキー、およびガードレールID
 
 - MCPクライアントアプリケーション (Claude Desktopなど)
 
@@ -164,19 +162,17 @@ pip install -e .
 
 CHAKOSHI_API_KEY=your_chakoshi_api_key
 
-CHAKOSHI_API_URL=https://api.beta.chakoshi.ntt.com/v1/judge/text
+CHAKOSHI_API_URL=https://api.beta.chakoshi.ntt.com/v1/guardrails/apply
 
-CHAKOSHI_MODEL_ID=chakoshi-moderation-241223
+CHAKOSHI_GUARDRAIL_ID=your_guardrail_id
 
-CHAKOSHI_CATEGORY_SET_ID=your_category_set_id
-
-CHAKOSHI_TIMEOUT_SEC=5
+CHAKOSHI_TIMEOUT_SEC=10
 
 ```
 
   
 
-**注意**: 実際の APIキーとカテゴリセットID はchakoshiプレイグラウンドの管理画面から取得してください。
+**注意**: 実際の APIキーとガードレールID はchakoshiプレイグラウンドの管理画面から取得してください。
 
   
 
@@ -209,11 +205,7 @@ Claude Desktop の設定ファイル（`claude_desktop_config.json`）に以下�
           "/PATH_to_chakoshi/chakoshi-mcp-server",
           "run",
           "main.py"
-        ],
-        "env": {
-          "CHAKOSHI_API_KEY": "YOUR_CHAKOSHI_API_KEY"
-        }
-
+        ]
 }
 
 }
@@ -240,25 +232,35 @@ Claude が自動的に `moderate_text` ツールを使用してモデレーシ�
 
 ## API レスポンス例
 
-  
+Guardrails Apply API のレスポンスから `assessments` フィールドを抽出して返します。
 
 ```json
-
-
 {
-  "category1": {
-    "score": 0.05,
-    "threshold": 0.5,
-    "result": "safe"
-  },
-  "category2": {
-    "score": 0.02,
-    "threshold": 0.3,
-    "result": "safe"
+  "guardrails": ["moderation", "keyword_filter"],
+  "user_input": "チェック対象のテキスト",
+  "guardrails_result": {
+    "moderation": {
+      "unsafe_flag": false,
+      "unsafe_score": 0.05,
+      "categories": {
+        "violence": {
+          "enabled": true,
+          "detected": false
+        },
+        "harassment": {
+          "enabled": true,
+          "detected": false
+        }
+      }
+    },
+    "keyword_filter": {
+      "matched": false,
+      "matches": [],
+      "original_text": "チェック対象のテキスト",
+      "masked_input": "チェック対象のテキスト"
+    }
   }
 }
-
-
 ```
   
 
