@@ -37,6 +37,11 @@ def _load_config_internal() -> SimpleNamespace:
     except ValueError:
         raise RuntimeError(f"Cannot convert environment variable CHAKOSHI_TIMEOUT_SEC ('{timeout_sec_str}') to an integer")
 
+    # Optional post quantum attestation of verdicts. Off unless QUANTOVA_ATTEST is set
+    # to a truthy value and a signer key file is given via QUANTOVA_SIGNING_KEY.
+    conf.attest = os.getenv("QUANTOVA_ATTEST", "").strip().lower() in ("1", "true", "yes", "on")
+    conf.signing_key_path = os.getenv("QUANTOVA_SIGNING_KEY")
+
     return conf
 
 # Load configuration settings when the module is imported

@@ -5,6 +5,19 @@ import mcp.types as types
 from mcp.server.lowlevel import Server
 from mcp.server.stdio import stdio_server
 from .config import settings
+from . import pq_attestation
+
+# Cache of loaded signer keypairs, keyed by the key file path.
+_signer_cache: dict = {}
+
+
+def _load_signer(path: str):
+    """Load a signer keypair once and reuse it for later calls."""
+    cached = _signer_cache.get(path)
+    if cached is None:
+        cached = pq_attestation.load_signer(path)
+        _signer_cache[path] = cached
+    return cached
 
 '''
 Helper function to call the chakoshi Guardrails Apply API.
@@ -102,6 +115,11 @@ def build_server() -> Server:
         try:
             # Call the chakoshi Guardrails Apply API
             result = await call_chakoshi(args["text"])
+            # Attach a post quantum attestation over the verdict when a signer is configured.
+            if settings.attest and settings.signing_key_path:
+                public_key, secret_key = _load_signer(settings.signing_key_path)
+                attestation = pq_attestation.build_attestation(result, public_key, secret_key)
+                result = {"verdict": result, "quantova_attestation": attestation}
             # Format the full API response for transparency (includes id, guardrail_id, assessments)
             pretty = json.dumps(result, ensure_ascii=False, indent=2)
             return [types.TextContent(type="text", text=pretty)]

@@ -264,6 +264,55 @@ Guardrails Apply API のレスポンスから `assessments` フィールドを�
 ```
   
 
+## ポスト量子署名による検証（任意）
+
+本サーバは判定結果にポスト量子署名（FIPS 204 ML-DSA）を付与できます。署名鍵を設定すると、各判定結果に自己完結型の署名が添付され、受信側は判定結果が本物であり改ざんされていないことを確認できます。量子計算機が登場した後も安全に検証できる署名方式です。
+
+この機能は任意です。既定では無効で、有効にした場合のみ出力に `quantova_attestation` が加わります。既存の出力形式は変わりません。
+
+### 1. 追加の依存関係
+
+```bash
+# pip を使用する場合
+pip install -e ".[pq]"
+
+# uv を使用する場合
+uv pip install -e ".[pq]"
+```
+
+### 2. 署名鍵の作成
+
+```bash
+python -m chakoshi_server.pq_attestation keygen signer.json
+```
+
+### 3. 環境変数の設定
+
+`.env` に以下を追加してください。
+
+```env
+QUANTOVA_ATTEST=true
+QUANTOVA_SIGNING_KEY=signer.json
+```
+
+有効時の出力例
+
+```json
+{
+  "verdict": { "...": "chakoshi の判定結果" },
+  "quantova_attestation": {
+    "scheme": "ML-DSA-65",
+    "issuer": "Quantova",
+    "payload_sha256": "...",
+    "public_key": "...",
+    "signature": "..."
+  }
+}
+```
+
+本機能は Quantova Inc による貢献です。導入やご相談は partnerships@Quantova.org までご連絡ください。
+
+
 ## 注意事項
 
 
